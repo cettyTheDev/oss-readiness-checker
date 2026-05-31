@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oss-readiness-checker"
+version = "0.1.0"
+description = "A CLI that scores open-source repository readiness for maintainers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "cettyTheDev" }]
+keywords = ["open-source", "github", "maintainer", "readme", "repository-health"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/cettyTheDev/oss-readiness-checker"
+Issues = "https://github.com/cettyTheDev/oss-readiness-checker/issues"
+
+[project.scripts]
+oss-readiness = "oss_readiness.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
