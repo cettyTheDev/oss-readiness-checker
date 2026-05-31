@@ -117,10 +117,16 @@ def check_license(root: Path) -> CheckResult:
         return fail("license", "Open-source license", 15, "No license file found.", "Add an OSI-approved license.")
     text = safe_read(license_file)
     known = ["MIT License", "Apache License", "BSD", "GNU GENERAL PUBLIC LICENSE", "Mozilla Public License"]
-    detail = "License file exists"
     if any(name.lower() in text.lower() for name in known):
-        detail = "Recognized open-source license text found"
-    return pass_check("license", "Open-source license", 15, detail)
+        return pass_check("license", "Open-source license", 15, "Recognized open-source license text found")
+    return result(
+        "license",
+        "Open-source license",
+        6,
+        15,
+        "License file exists, but no recognized open-source license text was found",
+        "Use a standard OSI-approved license such as MIT, Apache-2.0, BSD, GPL, or MPL.",
+    )
 
 
 def check_contributing(root: Path) -> CheckResult:
@@ -234,15 +240,33 @@ def check_tests(root: Path) -> CheckResult:
     ]
     found = [marker for marker in test_markers if (root / marker).exists()]
     if found:
-        return pass_check("tests", "Tests", 10, f"Found test marker(s): {', '.join(found[:3])}")
+        if has_test_files(root):
+            return pass_check("tests", "Tests", 10, f"Found test marker(s): {', '.join(found[:3])}")
+        return result(
+            "tests",
+            "Tests",
+            4,
+            10,
+            f"Found test marker(s), but no test files: {', '.join(found[:3])}",
+            "Add executable tests such as test_*.py, *_test.py, *.test.ts, or *.spec.ts.",
+        )
     nested_test_dirs = [
         path.relative_to(root).as_posix()
         for path in root.glob("*/tests")
         if path.is_dir()
     ]
     if nested_test_dirs:
-        return pass_check("tests", "Tests", 10, f"Found nested test directory: {', '.join(nested_test_dirs[:3])}")
-    test_files = list(root.rglob("test_*.py")) + list(root.rglob("*_test.py")) + list(root.rglob("*.test.ts"))
+        if has_test_files(root):
+            return pass_check("tests", "Tests", 10, f"Found nested test directory: {', '.join(nested_test_dirs[:3])}")
+        return result(
+            "tests",
+            "Tests",
+            4,
+            10,
+            f"Found nested test directory, but no test files: {', '.join(nested_test_dirs[:3])}",
+            "Add executable tests such as test_*.py, *_test.py, *.test.ts, or *.spec.ts.",
+        )
+    test_files = find_test_files(root)
     if test_files:
         return result("tests", "Tests", 7, 10, f"Found {len(test_files)} test-like file(s)", "Group tests under a clear tests/ directory.")
     return fail("tests", "Tests", 10, "No tests found.", "Add smoke tests or unit tests for the primary workflow.")
@@ -398,3 +422,15 @@ def tracked_files(root: Path) -> list[str]:
         if path.is_file() and ".git" not in path.parts:
             files.append(path.relative_to(root).as_posix())
     return files
+
+
+def find_test_files(root: Path) -> list[Path]:
+    patterns = ["test_*.py", "*_test.py", "*.test.ts", "*.spec.ts", "*.test.tsx", "*.spec.tsx"]
+    files: list[Path] = []
+    for pattern in patterns:
+        files.extend(path for path in root.rglob(pattern) if ".git" not in path.parts)
+    return files
+
+
+def has_test_files(root: Path) -> bool:
+    return bool(find_test_files(root))

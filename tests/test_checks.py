@@ -29,6 +29,30 @@ class ReadinessChecksTest(unittest.TestCase):
         self.assertGreaterEqual(report.score, 80)
         self.assertLessEqual(report.failed, 2)
 
+    def test_unknown_license_does_not_receive_full_credit(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "README.md").write_text("# Demo\n\nInstall and usage.\n", encoding="utf-8")
+            (root / "LICENSE").write_text("All rights reserved.\n", encoding="utf-8")
+
+            report = analyze_repository(root)
+
+        license_check = next(check for check in report.checks if check.id == "license")
+        self.assertEqual(license_check.status, "partial")
+        self.assertLess(license_check.points, license_check.max_points)
+
+    def test_empty_tests_directory_does_not_receive_full_credit(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "README.md").write_text("# Demo\n\nInstall and usage.\n", encoding="utf-8")
+            (root / "tests").mkdir()
+
+            report = analyze_repository(root)
+
+        tests_check = next(check for check in report.checks if check.id == "tests")
+        self.assertEqual(tests_check.status, "partial")
+        self.assertLess(tests_check.points, tests_check.max_points)
+
 
 def write_ready_repo(root: Path) -> None:
     (root / "README.md").write_text(

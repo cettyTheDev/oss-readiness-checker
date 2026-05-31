@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oss-readiness-checker"
-version = "0.1.0"
+version = "0.1.1"
 description = "A CLI that scores open-source repository readiness for maintainers."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -32,4 +32,3 @@ oss-readiness = "oss_readiness.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
