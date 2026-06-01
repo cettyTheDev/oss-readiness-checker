@@ -1,5 +1,7 @@
 # OSS Readiness Checker
 
+[![CI](https://github.com/cettyTheDev/oss-readiness-checker/actions/workflows/ci.yml/badge.svg)](https://github.com/cettyTheDev/oss-readiness-checker/actions/workflows/ci.yml)
+
 OSS Readiness Checker is a small CLI for maintainers who want to audit whether a repository looks ready for public open-source contribution and maintainer programs.
 
 It checks the basics that reviewers and new contributors look for: README quality, license, contribution guide, security policy, issue templates, PR template, CI, tests, release tags, recent activity, package metadata, and obvious secret hygiene.
@@ -76,7 +78,7 @@ python -m unittest discover -s tests
 python -m oss_readiness . --fail-under 80
 ```
 
-An example GitHub Actions workflow is available at [docs/ci-workflow.example.yml](docs/ci-workflow.example.yml). Copy it to `.github/workflows/ci.yml` when your repository auth allows workflow file updates.
+The live GitHub Actions workflow in `.github/workflows/ci.yml` runs the test suite across Python 3.10, 3.11, and 3.12, then runs the checker against this repository.
 
 ## Roadmap
 
