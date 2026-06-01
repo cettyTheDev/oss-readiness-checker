@@ -6,6 +6,13 @@ OSS Readiness Checker is a small CLI for maintainers who want to audit whether a
 
 It checks the basics that reviewers and new contributors look for: README quality, license, contribution guide, security policy, issue templates, PR template, CI, tests, release tags, recent activity, package metadata, and obvious secret hygiene.
 
+## Project Status
+
+- Latest release: [v0.1.1](https://github.com/cettyTheDev/oss-readiness-checker/releases/tag/v0.1.1)
+- CI: Python 3.10, 3.11, and 3.12 on GitHub Actions.
+- Maintenance surface: issue templates, pull request template, security policy, contribution guide, and code of conduct.
+- Example report: [examples/readiness-report.md](examples/readiness-report.md)
+
 ## Install
 
 Run from a local checkout:
